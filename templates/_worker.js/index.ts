@@ -108,10 +108,11 @@ export const routesMatcher = (
   return matchingRoutes;
 };
 
+type CfRequest = Request & { env: { ASSETS: Fetcher } };
+
 type EdgeFunction = {
   default: (
-    request: Request,
-    env: { ASSETS: Fetcher },
+    request: CfRequest,
     context: ExecutionContext
   ) => Response | Promise<Response>;
 };
@@ -141,6 +142,8 @@ export default {
       }
     }
 
+    const extendedRequest = Object.assign(request, { env });
+
     for (const { matchers, entrypoint } of Object.values(__FUNCTIONS__)) {
       let found = false;
       for (const matcher of matchers) {
@@ -157,7 +160,7 @@ export default {
       }
 
       if (found) {
-        return entrypoint.default(request, env, context);
+        return entrypoint.default(extendedRequest, context);
       }
     }
 
