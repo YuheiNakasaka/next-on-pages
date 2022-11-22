@@ -109,9 +109,15 @@ export const routesMatcher = (
 };
 
 type CfRequest = Request & { env: { ASSETS: Fetcher } } & { hoge: string };
+type CfContext = ExecutionContext & { env: { ASSETS: Fetcher } } & {
+  hoge: string;
+};
 
 type EdgeFunction = {
-  default: (request: CfRequest, env: any) => Response | Promise<Response>;
+  default: (
+    request: Request,
+    context: CfContext
+  ) => Response | Promise<Response>;
 };
 
 type EdgeFunctions = {
@@ -130,13 +136,13 @@ export default {
     const { pathname } = new URL(request.url);
     const routes = routesMatcher({ request }, __CONFIG__.routes);
 
-    const extendedRequest = Object.assign(request, { env: env, hoge: "hoge" });
+    const extendedContext = Object.assign(context, { env: env, hoge: "hoge" });
 
     for (const route of routes) {
       if ("middlewarePath" in route && route.middlewarePath in __MIDDLEWARE__) {
         return await __MIDDLEWARE__[route.middlewarePath].entrypoint.default(
-          extendedRequest,
-          env
+          request,
+          extendedContext
         );
       }
     }
@@ -157,7 +163,7 @@ export default {
       }
 
       if (found) {
-        return entrypoint.default(extendedRequest, env);
+        return entrypoint.default(request, extendedContext);
       }
     }
 
