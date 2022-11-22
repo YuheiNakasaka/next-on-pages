@@ -5,11 +5,6 @@
   "scripts": {
     "build": "npx esbuild --bundle --platform=node ./src/index.ts --external:esbuild --external:chokidar --outfile=./dist/index.js"
   },
-  "files": [
-    "./bin/index.js",
-    "./dist/index.js",
-    "./templates/"
-  ],
   "dependencies": {
     "acorn": "^8.8.0",
     "astring": "^1.8.3",
