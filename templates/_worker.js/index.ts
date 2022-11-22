@@ -108,15 +108,15 @@ export const routesMatcher = (
   return matchingRoutes;
 };
 
-type CfRequest = Request & { env: { ASSETS: Fetcher } } & { hoge: string };
+type CfRequest = Request & { env: { ASSETS: Fetcher } };
 type CfContext = ExecutionContext & { env: { ASSETS: Fetcher } } & {
   hoge: string;
 };
 
 type EdgeFunction = {
   default: (
-    request: Request,
-    context: CfContext
+    request: CfRequest,
+    context: ExecutionContext
   ) => Response | Promise<Response>;
 };
 
@@ -136,16 +136,16 @@ export default {
     const { pathname } = new URL(request.url);
     const routes = routesMatcher({ request }, __CONFIG__.routes);
 
-    const extendedContext = Object.assign(context, { env: env, hoge: "hoge" });
+    const extendedRequest = Object.assign(request, { env: env });
 
-    // for (const route of routes) {
-    //   if ("middlewarePath" in route && route.middlewarePath in __MIDDLEWARE__) {
-    //     return await __MIDDLEWARE__[route.middlewarePath].entrypoint.default(
-    //       request,
-    //       extendedContext
-    //     );
-    //   }
-    // }
+    for (const route of routes) {
+      if ("middlewarePath" in route && route.middlewarePath in __MIDDLEWARE__) {
+        return await __MIDDLEWARE__[route.middlewarePath].entrypoint.default(
+          extendedRequest,
+          context
+        );
+      }
+    }
 
     for (const { matchers, entrypoint } of Object.values(__FUNCTIONS__)) {
       let found = false;
@@ -163,10 +163,10 @@ export default {
       }
 
       if (found) {
-        return entrypoint.default(request, extendedContext);
+        return entrypoint.default(extendedRequest, context);
       }
     }
 
-    return env.ASSETS.fetch(request);
+    return env.ASSETS.fetch(extendedRequest);
   },
 } as ExportedHandler<{ ASSETS: Fetcher }>;
