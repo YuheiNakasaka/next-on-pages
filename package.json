@@ -26,6 +26,7 @@
     "p-limit": "^4.0.0",
     "prettier": "^2.7.1",
     "typescript": "^4.7.4",
+    "vercel": "^28.5.5",
     "vitest": "^0.24.3"
   }
 }

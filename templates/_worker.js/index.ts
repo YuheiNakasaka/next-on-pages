@@ -111,6 +111,7 @@ export const routesMatcher = (
 type EdgeFunction = {
   default: (
     request: Request,
+    env: { ASSETS: Fetcher },
     context: ExecutionContext
   ) => Response | Promise<Response>;
 };
@@ -156,7 +157,7 @@ export default {
       }
 
       if (found) {
-        return entrypoint.default(request, context);
+        return entrypoint.default(request, env, context);
       }
     }
 
