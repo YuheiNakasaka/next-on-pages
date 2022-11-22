@@ -111,10 +111,7 @@ export const routesMatcher = (
 type CfRequest = Request & { env: { ASSETS: Fetcher } } & { hoge: string };
 
 type EdgeFunction = {
-  default: (
-    request: CfRequest,
-    context: ExecutionContext
-  ) => Response | Promise<Response>;
+  default: (request: CfRequest, env: any) => Response | Promise<Response>;
 };
 
 type EdgeFunctions = {
@@ -139,7 +136,7 @@ export default {
       if ("middlewarePath" in route && route.middlewarePath in __MIDDLEWARE__) {
         return await __MIDDLEWARE__[route.middlewarePath].entrypoint.default(
           extendedRequest,
-          context
+          env
         );
       }
     }
@@ -160,7 +157,7 @@ export default {
       }
 
       if (found) {
-        return entrypoint.default(extendedRequest, context);
+        return entrypoint.default(extendedRequest, env);
       }
     }
 
