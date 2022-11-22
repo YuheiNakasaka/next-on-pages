@@ -486,7 +486,7 @@ const transform = async ({
     outfile: ".vercel/output/static/_worker.js",
   });
 
-  console.log("⚡️ Generated '.vercel/output/static/_worker.js'.");
+  console.log("⚡️ Generated!!!!! '.vercel/output/static/_worker.js'.");
 };
 
 const help = () => {

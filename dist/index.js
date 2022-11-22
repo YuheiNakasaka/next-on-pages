@@ -6199,7 +6199,7 @@ var transform = async ({
     },
     outfile: ".vercel/output/static/_worker.js"
   });
-  console.log("\u26A1\uFE0F Generated '.vercel/output/static/_worker.js'.");
+  console.log("\u26A1\uFE0F Generated!!!!! '.vercel/output/static/_worker.js'.");
 };
 var help = () => {
   console.log("\u26A1\uFE0F");
